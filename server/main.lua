@@ -33,15 +33,9 @@ local function itemCheck(source)
     end
 end
 
-AddEventHandler('Renewed-Lib:server:playerLoaded', function(source)
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
     Wait(3000)
-    itemCheck(source)
-end)
-
-AddEventHandler('Renewed-Lib:server:playerRemoved', function(source)
-    if duty.isDuty(source) then
-        duty.remove(source, true)
-    end
+    itemCheck(Player.PlayerData.source)
 end)
 
 -- Supports server restarts, but this is very bad please don't restart this with many players online

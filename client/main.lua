@@ -6,7 +6,28 @@ local isWhitelisted = false
 
 local Utils = require 'client.utils'
 
-local getGroups = exports['Renewed-Lib']:getLib().getPlayerGroup
+local getGroups = function()
+    local groups = {}
+    groups[QBX.PlayerData.job.name] = QBX.PlayerData.job.grade.level
+    groups[QBX.PlayerData.gang.name] = QBX.PlayerData.gang.grade.level
+    return groups
+end
+
+local groupUpdated = function()
+    local wasWhitelisted = isWhitelisted
+
+    isWhitelisted = isGroupsWhitelisted(getGroups())
+
+    if wasWhitelisted ~= isWhitelisted then
+        if next(playerBlips) then
+            for source, blip in pairs(playerBlips) do
+                RemoveBlip(blip)
+                playerBlips[source] = nil
+            end
+        end
+        TriggerServerEvent('Renewed-Dutyblips:server:updateMeBlip', isWhitelisted)
+    end
+end
 
 local NetworkIsPlayerActive = NetworkIsPlayerActive
 local GetPlayerFromServerId = GetPlayerFromServerId
@@ -166,26 +187,19 @@ Utils.registerNetEvent('Renewed-Dutyblips:client:removedOfficer', function(offic
     end
 end)
 
-AddEventHandler('Renewed-Lib:client:PlayerLoaded', function(player)
-    isWhitelisted = isGroupsWhitelisted(player.group)
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    isWhitelisted = isGroupsWhitelisted(getGroups())
 end)
 
-AddEventHandler('Renewed-Lib:client:UpdateGroup', function(groups)
-    local wasWhitelisted = isWhitelisted
-
-    isWhitelisted = isGroupsWhitelisted(groups)
-
-    if wasWhitelisted ~= isWhitelisted then
-        if next(playerBlips) then
-            for source, blip in pairs(playerBlips) do
-                RemoveBlip(blip)
-                playerBlips[source] = nil
-            end
-        end
-
-        TriggerServerEvent('Renewed-Dutyblips:server:updateMeBlip', isWhitelisted)
-    end
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function()
+    groupUpdated()
 end)
+
+RegisterNetEvent('QBCore:Client:OnGangUpdate', function()
+    groupUpdated()
+end)
+
+
 
 AddEventHandler('onResourceStart', function(resource)
     if resource == GetCurrentResourceName() then

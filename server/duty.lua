@@ -1,4 +1,3 @@
-local Renewed = exports['Renewed-Lib']:getLib()
 local Config = require 'config.server'
 
 local duty = {}
@@ -14,8 +13,18 @@ function duty.getDutyPlayers()
     return dutyBlips
 end
 
-local function groupCheck(source, playerData)
-    local groups = playerData.Groups or Renewed.getPlayerGroups(source)
+local function getPlayerGroups(source)
+    local player = exports.qbx_core:GetPlayer(source)
+    local groups = {}
+    if player then
+        groups[player.PlayerData.job.name] = player.PlayerData.job.grade.level
+        groups[player.PlayerData.gang.name] = player.PlayerData.gang.grade.level
+    end
+    return groups
+end
+
+local function groupCheck(source)
+    local groups = getPlayerGroups(source)
 
     for job, color in pairs(Config.dutyJobs) do
         if groups[job] then
@@ -31,12 +40,13 @@ function duty.isDuty(source)
 end
 
 function duty.add(source)
-    local playerData = Renewed.getPlayer(source)
-    local jobColor = groupCheck(source, playerData)
+    local player = exports.qbx_core:GetPlayer(source)
+    local playerData = player.PlayerData
+    local jobColor = groupCheck(source)
 
     if jobColor then
         dutyBlips[source] = {
-            name = playerData.name,
+            name = playerData.charinfo.firstname .. ' ' .. playerData.charinfo.lastname,
             ped = GetPlayerPed(source),
             color = jobColor
         }
@@ -56,7 +66,7 @@ function duty.remove(source, forced)
     end
 end
 
-RegisterNetEvent('Renewed-Lib:server:playerRemoved', function(source)
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(source)
     local isOnDuty = dutyBlips[source]
 
     if isOnDuty then
@@ -65,5 +75,13 @@ RegisterNetEvent('Renewed-Lib:server:playerRemoved', function(source)
     end
 end)
 
+AddEventHandler('playerDropped', function()
+    local isOnDuty = dutyBlips[source]
+
+    if isOnDuty then
+        dutyBlips[source] = nil
+        Player(source).state:set('renewed_dutyblips', false, true)
+    end
+end)
 
 return duty
