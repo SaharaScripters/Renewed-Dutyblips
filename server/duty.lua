@@ -17,8 +17,12 @@ local function getPlayerGroups(source)
     local player = exports.qbx_core:GetPlayer(source)
     local groups = {}
     if player then
-        groups[player.PlayerData.job.name] = player.PlayerData.job.grade.level
-        groups[player.PlayerData.gang.name] = player.PlayerData.gang.grade.level
+        if Config.dutyJobs[player.PlayerData.job.name] then
+            groups[player.PlayerData.job.name] = player.PlayerData.job.grade.level
+        end
+        if player.PlayerData.gang and Config.dutyJobs[player.PlayerData.gang.name] then
+            groups[player.PlayerData.gang.name] = player.PlayerData.gang.grade.level
+        end
     end
     return groups
 end

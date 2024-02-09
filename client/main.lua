@@ -8,8 +8,12 @@ local Utils = require 'client.utils'
 
 local getGroups = function()
     local groups = {}
-    groups[QBX.PlayerData.job.name] = QBX.PlayerData.job.grade.level
-    groups[QBX.PlayerData.gang.name] = QBX.PlayerData.gang.grade.level
+    if dutyBlips[QBX.PlayerData.job.name] then
+        groups[QBX.PlayerData.job.name] = QBX.PlayerData.job.grade.level
+    end
+    if dutyBlips[QBX.PlayerData.gang.name] then
+        groups[QBX.PlayerData.gang.name] = QBX.PlayerData.gang.grade.level
+    end
     return groups
 end
 
