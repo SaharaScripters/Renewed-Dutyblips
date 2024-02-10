@@ -6,6 +6,16 @@ local isWhitelisted = false
 
 local Utils = require 'client.utils'
 
+local function isGroupsWhitelisted(groups)
+    if groups then
+        for group, _ in pairs(dutyBlips) do
+            if groups[group] then
+                return true
+            end
+        end
+    end
+end
+
 local getGroups = function()
     local groups = {}
     if dutyBlips[QBX.PlayerData.job.name] then
@@ -37,15 +47,6 @@ local NetworkIsPlayerActive = NetworkIsPlayerActive
 local GetPlayerFromServerId = GetPlayerFromServerId
 local DoesBlipExist = DoesBlipExist
 
-local function isGroupsWhitelisted(groups)
-    if groups then
-        for group, _ in pairs(dutyBlips) do
-            if groups[group] then
-                return true
-            end
-        end
-    end
-end
 
 local function createPedBlip(blipData)
     local playerId = GetPlayerFromServerId(blipData.source)
