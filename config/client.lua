@@ -1,5 +1,5 @@
 return {
-    enableTrackerAudio = true, -- set to true if u want to enable the beep coming from police tracker
+    enableTrackerAudio = false, -- set to true if u want to enable the beep coming from police tracker
 
     classSprites = {
         1, -- class 1
