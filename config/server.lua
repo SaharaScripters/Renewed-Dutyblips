@@ -4,7 +4,8 @@ return {
     ]]
     dutyJobs = {
         ['police'] = 38,
-        ['ambulance'] = 5
+        ['civilprotection'] = 47,
+        ['ambulance'] = 49
     },
 
     itemName = 'gps_tracker',
