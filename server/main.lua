@@ -3,21 +3,24 @@ lib.versionCheck('Renewed-Scripts/Renewed-Dutyblips')
 local blipType = require 'config.server'.blipType
 local dutyBlips = require 'server.duty'
 
+CreateThread(function()
+    while true do
+        local currentDutyBlips = dutyBlips.getCopsOnDuty()
+        local size = #currentDutyBlips
 
-SetInterval(function()
-    local currentDutyBlips = dutyBlips.getCopsOnDuty()
-    local size = #currentDutyBlips
+        if size > 0 then
+            local activeBlips = table.create(0, size)
 
-    if size > 0 then
-        local activeBlips = table.create(0, size)
+            for i = 1, size do
+                activeBlips[i] = GetEntityCoords(currentDutyBlips[i].ped).xy
+            end
 
-        for i = 1, size do
-            activeBlips[i] = GetEntityCoords(currentDutyBlips[i].ped).xy
+            dutyBlips.triggerDutyEvent('Renewed-Dutyblips:updateBlips', activeBlips)
         end
-
-        dutyBlips.triggerDutyEvent('Renewed-Dutyblips:updateBlips', activeBlips)
+        Wait(math.random(3, 5) * 1000)
     end
-end, math.random(3, 5) * 1000)
+end)
+
 
 
 local path = ('bridge.%s'):format(blipType)

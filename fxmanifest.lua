@@ -19,3 +19,5 @@ files {
     'client/blip.lua',
     'client/utils.lua'
 }
+
+lua54 'yes'

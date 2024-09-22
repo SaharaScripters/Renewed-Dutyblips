@@ -1,5 +1,3 @@
-if not lib.checkDependency('Renewed-Lib', '1.1.7', true) then return end
-
 local dutyGroup = require 'config.server'.dutyJobs
 local duty = require 'server.duty'
 local wasInService = {}
@@ -16,12 +14,11 @@ AddStateBagChangeHandler('renewed_service', '', function(bagName, _, value)
     end
 end)
 
-AddEventHandler('Renewed-Lib:server:playerRemoved', function(source)
+AddEventHandler("QBCore:Server:OnPlayerUnload", function(src)
     if wasInService[source] then
         duty.remove(source)
     end
 end)
-
 
 AddEventHandler('playerDropped', function()
     if wasInService[source] then
