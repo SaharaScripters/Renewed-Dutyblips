@@ -50,7 +50,7 @@ end, {
     },
 })
 
-AddEventHandler('Renewed-Lib:server:playerRemoved', function(source)
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(source)
     if inService[source] then
         duty.remove(source)
     end
