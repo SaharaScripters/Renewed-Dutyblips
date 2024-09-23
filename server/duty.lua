@@ -67,7 +67,6 @@ local function removePolice(source)
 
     if index then
         table.remove(currentDuty, index)
-
         Player(source).state:set('renewed_dutyblips', false, true)
         triggerDutyEvent('Renewed-Dutyblips:removeOfficer', index)
         TriggerClientEvent('Renewed-Dutyblips:goOffDuty', source)

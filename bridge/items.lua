@@ -56,6 +56,15 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', function(source)
     end
 end)
 
+AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
+    if inService[source] then
+        duty.remove(source)
+        inService[source] = nil
+        notify(source, false)
+    end
+end)
+
+
 AddEventHandler('playerDropped', function()
     if inService[source] then
         duty.remove(source)
